@@ -12,6 +12,7 @@
             --card-bg-color: #ffffff;
             --text-color: #333333;
             --shadow-color: rgba(0, 0, 0, 0.1);
+            --modal-bg: rgba(0, 0, 0, 0.85);
         }
 
         * {
@@ -105,6 +106,7 @@
             position: relative;
             padding-top: 75%; /* 4:3 Aspect Ratio */
             overflow: hidden;
+            cursor: pointer;
         }
 
         .card-img {
@@ -183,6 +185,149 @@
             margin-right: 0.25rem;
         }
 
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-bg);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 2rem;
+        }
+
+        .modal-image-container {
+            position: relative;
+            max-width: 80%;
+            max-height: 70vh;
+            margin: 0 auto;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-details {
+            color: white;
+            text-align: center;
+            margin-top: 1.5rem;
+            max-width: 600px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .modal-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+            transform: translateY(-50%);
+            z-index: 1010;
+        }
+
+        .modal-nav {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-nav:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .modal-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-indicator.active {
+            background-color: white;
+        }
+
+        /* For Sale badge */
+        .for-sale-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
         /* Responsive Breakpoints */
         @media (max-width: 1200px) {
             .image-grid {
@@ -194,11 +339,22 @@
             .image-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+            .modal-image-container {
+                max-width: 90%;
+            }
         }
 
         @media (max-width: 768px) {
             .image-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            .modal-controls {
+                padding: 0;
+            }
+            .modal-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
             }
         }
 
@@ -213,20 +369,15 @@
             .filter-controls label {
                 margin-bottom: 0.5rem;
             }
-        }
-
-        /* CSS for the "For Sale" badge */
-        .for-sale-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #ff6b6b;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            z-index: 2;
+            .modal-details {
+                margin-top: 1rem;
+            }
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            .modal-description {
+                font-size: 0.9rem;
+            }
         }
 
         /* Footer styles */
@@ -270,6 +421,31 @@
         </div>
     </div>
 
+    <!-- Modal for image carousel -->
+    <div id="imageModal" class="modal">
+        <button id="modalClose" class="modal-close">&times;</button>
+        
+        <div class="modal-content">
+            <div class="modal-image-container">
+                <img id="modalImage" class="modal-image" src="" alt="">
+                <div class="modal-controls">
+                    <button id="prevBtn" class="modal-nav">&lsaquo;</button>
+                    <button id="nextBtn" class="modal-nav">&rsaquo;</button>
+                </div>
+            </div>
+            
+            <div class="modal-details">
+                <h3 id="modalTitle" class="modal-title"></h3>
+                <p id="modalDescription" class="modal-description"></p>
+                <div id="modalDate" class="modal-date"></div>
+            </div>
+            
+            <div id="modalIndicators" class="modal-indicators">
+                <!-- Indicators will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <p>© 2025 Vipul Anand. All rights reserved. Ad Campaign Artifacts Collection.</p>
@@ -277,19 +453,19 @@
     </footer>
 
     <script>
-        // Sample data - this would be replaced with your actual data
+        // Sample data with your provided image links
         const artifacts = [
             {
                 id: 1,
                 title: "Insurance Social Media Campaign",
-                description: "the innerself coming alive dipicting expression of insecurity.",
+                description: "The innerself coming alive depicting expression of insecurity.",
                 imageUrl: "https://raw.githubusercontent.com/harmonyca25/ads/refs/heads/main/assets/insecuredlook.jpeg",
                 date: "2025-04-27",
                 forSale: true
             },
             {
                 id: 2,
-                title: "ghiblistyle harmonyplan services theme continued.",
+                title: "Ghibli Style HarmonyPlan Services Theme",
                 description: "Elegant visual concept for connecting with elderly clientele.",
                 imageUrl: "https://raw.githubusercontent.com/harmonyca25/ads/refs/heads/main/assets/ghiblitheme.jpeg",
                 date: "2025-04-15",
@@ -321,7 +497,7 @@
             },
             {
                 id: 6,
-                title: "Virtual Tour of harmonyplan Insurance Promotion",
+                title: "Virtual Tour of HarmonyPlan Insurance Promotion",
                 description: "Visual assets for promoting virtual policy tours, perfect for social media and email campaigns.",
                 imageUrl: "https://raw.githubusercontent.com/harmonyca25/ads/refs/heads/main/assets/digitalrealm.jpeg",
                 date: "2025-04-15",
@@ -371,7 +547,7 @@
         function createCard(artifact) {
             return `
                 <div class="card" data-id="${artifact.id}" data-date="${artifact.date}">
-                    <div class="card-img-container">
+                    <div class="card-img-container" onclick="openModal(${artifact.id})">
                         <img src="${artifact.imageUrl}" alt="${artifact.title}" class="card-img">
                         ${artifact.forSale ? '<span class="for-sale-badge">For Sale</span>' : ''}
                     </div>
@@ -426,7 +602,8 @@
             
             // Add event listeners to Copy URL buttons
             document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent triggering modal open
                     const url = this.getAttribute('data-url');
                     navigator.clipboard.writeText(url).then(() => {
                         // Provide feedback that URL was copied
@@ -439,6 +616,114 @@
                 });
             });
         }
+
+        // Modal functionality
+        let currentImageIndex = 0;
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalDate = document.getElementById('modalDate');
+        const modalClose = document.getElementById('modalClose');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const modalIndicators = document.getElementById('modalIndicators');
+
+        // Function to open modal with specific image
+        function openModal(id) {
+            // Find the index of the artifact with the matching ID
+            currentImageIndex = artifacts.findIndex(artifact => artifact.id === id);
+            updateModal();
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            
+            // Create indicators
+            createIndicators();
+        }
+
+        // Function to close modal
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Function to update modal content
+        function updateModal() {
+            const artifact = artifacts[currentImageIndex];
+            modalImage.src = artifact.imageUrl;
+            modalTitle.textContent = artifact.title;
+            modalDescription.textContent = artifact.description;
+            modalDate.textContent = `Created: ${formatDate(artifact.date)}`;
+            
+            // Update indicators
+            updateIndicators();
+        }
+
+        // Function to show next image
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % artifacts.length;
+            updateModal();
+        }
+
+        // Function to show previous image
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + artifacts.length) % artifacts.length;
+            updateModal();
+        }
+
+        // Function to create indicators
+        function createIndicators() {
+            modalIndicators.innerHTML = '';
+            artifacts.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = 'modal-indicator';
+                if (index === currentImageIndex) {
+                    indicator.classList.add('active');
+                }
+                indicator.addEventListener('click', () => {
+                    currentImageIndex = index;
+                    updateModal();
+                });
+                modalIndicators.appendChild(indicator);
+            });
+        }
+
+        // Function to update indicators
+        function updateIndicators() {
+            const indicators = document.querySelectorAll('.modal-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === currentImageIndex) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Event listeners for modal
+        modalClose.addEventListener('click', closeModal);
+        prevBtn.addEventListener('click', showPrevImage);
+        nextBtn.addEventListener('click', showNextImage);
+
+        // Close modal when clicking outside the content
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (modal.style.display === 'block') {
+                if (e.key === 'ArrowLeft') {
+                    showPrevImage();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                } else if (e.key === 'Escape') {
+                    closeModal();
+                }
+            }
+        });
 
         // Initialize the grid with newest first
         document.addEventListener('DOMContentLoaded', function() {
